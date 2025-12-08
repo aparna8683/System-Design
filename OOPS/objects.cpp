@@ -8,22 +8,33 @@ private:
     int age;
     string name;
     int nos;
+    
     // Contsturctor
 public:
     Student()
     {
         cout << "Students Default conts called" << endl;
     }
+    // Parameterized Constructor
+    Student(string name, int id, int age, int nos)
+    {
+        this->name = name;
+        this->id = id;
+        this->age = age;
+        this->nos = nos;
+    }
+    // copy constructor
+    Student(const Student &srcObj)
+    {
+        this->name = srcObj.name;
+        this->id = srcObj.id;
+        this->age = srcObj.age;
+        this->nos = srcObj.nos;
+    }
     // Functions// Behaviours// Methods
     void study()
     {
-        cout << "Enter The name of student"
-             << endl;
-        string nam;
-        cin >> nam;
-        name = nam;
-
-        cout << this->name <<" " <<"is studying" << endl;
+        cout << this->name << " " << "is studying" << endl;
     }
     void countAge()
     {
@@ -36,8 +47,13 @@ public:
 };
 int main()
 {
-    Student s1;
-    s1.study();
-    s1.countAge();
+    // Student s1("aparna", 2, 21, 4);
+    // s1.study();
+    // s1.countAge();
+    // Student s2=s1;
+    // s2.countAge();
+    Student *A = new Student("Anshu", 2, 3, 4);
+    A->countAge();
+    delete A;
     return 0;
 }
