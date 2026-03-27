@@ -24,7 +24,7 @@ public:
     {
         products.push_back(product);
     }
-    vector<Product *> &getProduct()
+    vector<Product *> getProduct()
     {
         return products;
     }
@@ -56,31 +56,21 @@ public:
         }
     }
 };
-class DBPersistance
+class SaveToDB
 {
 private:
     ShoppingCart *cart;
 
 public:
-    virtual void save(ShoppingCart *cart) = 0;
-};
-class saveToMongo : public DBPersistance
-{
-public:
-    void save(ShoppingCart *cart) override
+    SaveToDB(ShoppingCart *cart)
     {
-        cout << "Products are saved to mongodb" << endl;
+        this->cart = cart;
+    }
+    void saveToDb()
+    {
+        cout << "Products saved to db" << endl;
     }
 };
-class saveToSQL : public DBPersistance
-{
-public:
-    void save(ShoppingCart *cart) override
-    {
-        cout << "Products are saved to SQL" << endl;
-    }
-};
-
 int main()
 {
     ShoppingCart *cart = new ShoppingCart();
@@ -89,9 +79,6 @@ int main()
     cart->calTotalPrice();
     PrintInvoice *printer = new PrintInvoice(cart);
     printer->print();
-    DBPersistance *db = new saveToMongo();
-    DBPersistance *db2 = new saveToSQL();
-    db2->save(cart);
-    db->save(cart);
-    return 0;
+    SaveToDB *storage = new SaveToDB(cart);
+    storage->saveToDb();
 }

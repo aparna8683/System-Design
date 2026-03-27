@@ -1,104 +1,114 @@
 #include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
-// Signature Rule
-class Parent
+class Account
 {
 public:
-    virtual void print(string msg)
-    {
-        cout << "Parent:" << endl;
-    }
+    virtual void deposit(double amount) = 0;
+    virtual void withDrawn(double amount) = 0;
+    virtual ~Account() {}
 };
-class Child : public Parent
-{
-public:
-    void print(string msg) override
-    {
-        cout << "Child:" << endl;
-    }
-};
-class Client
+class SavingAccount : public Account
 {
 private:
-    Parent *p;
-
-public:
-    Client(Parent *p)
-    {
-        this->p = p;
-    }
-    void printMsg()
-    {
-        p->print("Hello");
-    }
-};
-// Return Type Rule
-class Animal
-{
-public:
-    Animal *animal;
-    Animal(Animal *animal)
-    {
-        this->animal = animal;
-    }
-
-public:
-    Animal *animal;
-    Animal *returnAnimal()
-    {
-        return animal;
-    }
-};
-class Dog : public Animal
-{
-public:
-    Dog *dog;
-    Dog *returnDog()
-    {
-        return dog;
-    }
-};
-// Property Rules
-// Class Invariant
-class BankAccount
-{
-protected:
     double balance;
 
 public:
-    BankAccount(double b)
+    SavingAccount()
     {
-        if (b < 0)
+        balance = 0;
+    }
+    void deposit(double amount) override
+    {
+        balance += amount;
+        cout << " Withdrawn:" << amount << " from saving Account. New balance:" << balance << endl;
+    }
+    void withDrawn(double amount) override
+    {
+        if (balance >= amount)
         {
-            throw invalid_argument("Balance can't be negative");
+            balance -= amount;
+            cout << "Withdrawn amount is" << amount << "Balance saved is " << balance << endl;
+        }
+        else
+        {
+            cout << "Amount is not enough" << endl;
         }
     }
-    virtual void withdraw(double amount)
-    {
-        if (balance - amount < 0)
+};
+class CurrentAccount : public Account
+{
+private:
+    double balance;
 
-            throw runtime_error("Insufficient funds");
-        balance -= amount;
-        cout << "Amount withdrawn. Remaining balance is" << balance << endl;
+public:
+    CurrentAccount()
+    {
+        balance = 0;
+    }
+    void deposit(double amount) override
+    {
+        balance += amount;
+        cout << " Added amount:" << amount << "in Current Account. New balance:" << balance << endl;
+    }
+    void withDrawn(double amount) override
+    {
+        if (balance >= amount)
+        {
+            balance -= amount;
+            cout << "Withdrawn amount from CurrentAccount is" << amount << "Balance saved is " << balance << endl;
+        }
+        else
+        {
+            cout << "Amount is not enough in Current Account" << endl;
+        }
     }
 };
-// Breaks Invariant: Should not be allowed
-class cheatAccount : public BankAccount
+class FixedAccount : public Account
 {
+private:
+    double balance;
+
 public:
-    cheatAccount(double b) : BankAccount(b)
+    FixedAccount()
     {
+        balance = 0;
     }
-    void withdraw(double amount) override
+    void deposit(double amount)
+    {
+        balance += amount;
+        cout << "Amount deposited is " << balance << "in Fixed Account" << endl;
+    }
+    void withDrawn(double amount) override
     {
         balance -= amount;
-        cout << "Amount Withdrawn .Remaining balance is " << endl;
+        cout << "Amount debited from the fd is " << balance << "from FD Account" << endl;
+    }
+};
+class BankClient
+{
+private:
+    vector<Account *> accounts;
+
+public:
+    BankClient(vector<Account *> accounts)
+    {
+        this->accounts = accounts;
+    }
+    void processTransactions()
+    {
+        for (Account *acc : accounts)
+        {
+            acc->deposit(100);
+        }
     }
 };
 int main()
 {
-    Parent *parent = new Parent();
-    Parent *child = new Child();
-    Client *client = new Client(child);
-    client->printMsg();
+    vector<Account *> account;
+    account.push_back(new SavingAccount());
+    account.push_back(new CurrentAccount());
+    account.push_back(new FixedAccount());
+
+    return 0;
 }
